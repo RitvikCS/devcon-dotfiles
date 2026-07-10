@@ -22,21 +22,41 @@ One repo, two jobs:
 
 ## Using a template in a project
 
-Copy the variant you want into the project, bring the container up with the
-dotfiles flag, and exec into it:
+Copy the variant you want into the project as `.devcontainer/devcontainer.json`:
 
 ```sh
 mkdir -p myproject/.devcontainer
 cp devcontainer-templates/aws/devcontainer.json myproject/.devcontainer/
+```
 
-cd myproject
+## Starting a container with these dotfiles
+
+From the project folder, bring the container up with the dotfiles flags, then
+exec into it:
+
+```sh
 devcontainer up --workspace-folder . \
   --dotfiles-repository https://github.com/RitvikCS/devcon-dotfiles
+
 devcontainer exec --workspace-folder . bash
 ```
 
-`install.sh` is run automatically after cloning (the CLI looks for it by name;
-default clone path is `~/dotfiles` inside the container).
+The dotfiles flags on `devcontainer up`:
+
+| Flag | What it does | Default |
+|---|---|---|
+| `--dotfiles-repository` | Git URL to clone into the container after creation | — (off) |
+| `--dotfiles-target-path` | Where the repo is cloned inside the container | `~/dotfiles` |
+| `--dotfiles-install-command` | Script to run after cloning | first of `install.sh`, `install`, `bootstrap.sh`, `bootstrap`, `setup.sh`, `setup` found in the repo root |
+
+Only `--dotfiles-repository` is needed here — this repo's `install.sh` is
+picked up by the default. Dotfiles are applied once at container creation; to
+re-apply after changing them, rebuild with:
+
+```sh
+devcontainer up --workspace-folder . --remove-existing-container \
+  --dotfiles-repository https://github.com/RitvikCS/devcon-dotfiles
+```
 
 To avoid retyping the flag, alias it on the host:
 
