@@ -1,0 +1,35 @@
+// AWS variant — base + aws-cli + terraform (EKS/terraform workflow).
+// devcontainer.json has no inheritance, so the base features are repeated here.
+{
+	"name": "aws",
+	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
+
+	"features": {
+		// --- base ---
+		"ghcr.io/devcontainers/features/python:1": {
+			"version": "3.12"
+		},
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "lts"
+		},
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+			"version": "latest",
+			"helm": "latest",
+			"minikube": "none"
+		},
+		"ghcr.io/duduribeiro/devcontainer-features/neovim:1": {
+			"version": "stable"
+		},
+		// --- aws ---
+		"ghcr.io/devcontainers/features/aws-cli:1": {},
+		"ghcr.io/devcontainers/features/terraform:1": {}
+	},
+
+	// Reuse host AWS credentials so you don't re-auth in every container.
+	// Run `mkdir -p ~/.aws` on the host once, or docker creates it root-owned.
+	"mounts": [
+		"source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind"
+	],
+
+	"remoteUser": "vscode"
+}

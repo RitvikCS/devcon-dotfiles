@@ -1,0 +1,33 @@
+// GCP variant — base + gcloud CLI (community feature; no official one exists).
+// devcontainer.json has no inheritance, so the base features are repeated here.
+{
+	"name": "gcp",
+	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
+
+	"features": {
+		// --- base ---
+		"ghcr.io/devcontainers/features/python:1": {
+			"version": "3.12"
+		},
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "lts"
+		},
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+			"version": "latest",
+			"helm": "latest",
+			"minikube": "none"
+		},
+		"ghcr.io/duduribeiro/devcontainer-features/neovim:1": {
+			"version": "stable"
+		},
+		// --- gcp ---
+		"ghcr.io/dhoeric/features/google-cloud-cli:1": {}
+	},
+
+	// Reuse host gcloud credentials (run `mkdir -p ~/.config/gcloud` on the host once).
+	"mounts": [
+		"source=${localEnv:HOME}/.config/gcloud,target=/home/vscode/.config/gcloud,type=bind"
+	],
+
+	"remoteUser": "vscode"
+}

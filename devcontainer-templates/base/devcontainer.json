@@ -1,0 +1,35 @@
+// Base template — everything the other variants build on.
+// Copy this file into a project as .devcontainer/devcontainer.json
+// (or pick a variant folder that adds a cloud CLI on top).
+{
+	"name": "base",
+	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
+
+	"features": {
+		"ghcr.io/devcontainers/features/python:1": {
+			"version": "3.12"
+		},
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "lts"
+		},
+		// kubectl + helm; minikube explicitly disabled
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+			"version": "latest",
+			"helm": "latest",
+			"minikube": "none"
+		},
+		// Builds neovim stable from source on first image build (~3-5 min,
+		// cached afterwards). Debian's apt neovim is far too old.
+		"ghcr.io/duduribeiro/devcontainer-features/neovim:1": {
+			"version": "stable"
+		}
+	},
+
+	"remoteUser": "vscode"
+
+	// To talk to a real cluster from inside the container, bind-mount your
+	// host kubeconfig (make sure ~/.kube exists on the host first):
+	// "mounts": [
+	// 	"source=${localEnv:HOME}/.kube,target=/home/vscode/.kube,type=bind"
+	// ]
+}

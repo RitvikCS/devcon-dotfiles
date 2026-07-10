@@ -1,0 +1,33 @@
+// k8s-lab variant — base + docker-in-docker + kind.
+// For CKA practice and throwaway local clusters: `kind create cluster`
+// works entirely inside the container. Kustomize is built into kubectl
+// (`kubectl apply -k`), no separate install needed.
+{
+	"name": "k8s-lab",
+	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
+
+	"features": {
+		// --- base ---
+		"ghcr.io/devcontainers/features/python:1": {
+			"version": "3.12"
+		},
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "lts"
+		},
+		"ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+			"version": "latest",
+			"helm": "latest",
+			"minikube": "none"
+		},
+		"ghcr.io/duduribeiro/devcontainer-features/neovim:1": {
+			"version": "stable"
+		},
+		// --- lab ---
+		// A full docker daemon inside the container (needs --privileged,
+		// which the feature sets up itself). This is what lets kind run.
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/mpriscella/features/kind:1": {}
+	},
+
+	"remoteUser": "vscode"
+}
