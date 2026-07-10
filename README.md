@@ -14,7 +14,7 @@ One repo, two jobs:
 
 | Template | Adds on top of base |
 |---|---|
-| `base/` | — (debian bookworm, python 3.12, node LTS, kubectl, helm, neovim) |
+| `base/` | — (ubuntu 24.04, python 3.12, node LTS, kubectl, helm, homebrew, neovim via brew) |
 | `aws/` | aws-cli, terraform, `~/.aws` bind mount |
 | `azure/` | azure-cli, `~/.azure` bind mount |
 | `gcp/` | gcloud, `~/.config/gcloud` bind mount |
@@ -53,8 +53,9 @@ user settings — `dotfiles.repository` — instead of a flag.)
 
 ## Notes
 
-- First build of any template takes a few minutes (neovim compiles from
-  source); rebuilds are cached.
+- Neovim comes from Homebrew (`onCreateCommand`), which ships current stable
+  as a prebuilt bottle — and gives you `brew install <whatever>` inside every
+  container for one-off tools.
 - The cloud variants bind-mount host credential dirs — `mkdir -p` them on the
   host first or docker creates them root-owned.
 - Node is installed via the official feature (nvm-based, version pinned in the

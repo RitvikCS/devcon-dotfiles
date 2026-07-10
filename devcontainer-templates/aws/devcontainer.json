@@ -2,7 +2,7 @@
 // devcontainer.json has no inheritance, so the base features are repeated here.
 {
 	"name": "aws",
-	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
 
 	"features": {
 		// --- base ---
@@ -17,13 +17,13 @@
 			"helm": "latest",
 			"minikube": "none"
 		},
-		"ghcr.io/duduribeiro/devcontainer-features/neovim:1": {
-			"version": "stable"
-		},
+		"ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
 		// --- aws ---
 		"ghcr.io/devcontainers/features/aws-cli:1": {},
 		"ghcr.io/devcontainers/features/terraform:1": {}
 	},
+
+	"onCreateCommand": "/home/linuxbrew/.linuxbrew/bin/brew install neovim",
 
 	// Reuse host AWS credentials so you don't re-auth in every container.
 	// Run `mkdir -p ~/.aws` on the host once, or docker creates it root-owned.

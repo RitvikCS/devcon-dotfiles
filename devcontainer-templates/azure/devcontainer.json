@@ -2,7 +2,7 @@
 // devcontainer.json has no inheritance, so the base features are repeated here.
 {
 	"name": "azure",
-	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
 
 	"features": {
 		// --- base ---
@@ -17,12 +17,12 @@
 			"helm": "latest",
 			"minikube": "none"
 		},
-		"ghcr.io/duduribeiro/devcontainer-features/neovim:1": {
-			"version": "stable"
-		},
+		"ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
 		// --- azure ---
 		"ghcr.io/devcontainers/features/azure-cli:1": {}
 	},
+
+	"onCreateCommand": "/home/linuxbrew/.linuxbrew/bin/brew install neovim",
 
 	// Reuse host Azure credentials (run `mkdir -p ~/.azure` on the host once).
 	"mounts": [

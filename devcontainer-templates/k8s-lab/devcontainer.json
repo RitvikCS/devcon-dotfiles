@@ -4,7 +4,7 @@
 // (`kubectl apply -k`), no separate install needed.
 {
 	"name": "k8s-lab",
-	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
 
 	"features": {
 		// --- base ---
@@ -19,15 +19,15 @@
 			"helm": "latest",
 			"minikube": "none"
 		},
-		"ghcr.io/duduribeiro/devcontainer-features/neovim:1": {
-			"version": "stable"
-		},
+		"ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
 		// --- lab ---
 		// A full docker daemon inside the container (needs --privileged,
 		// which the feature sets up itself). This is what lets kind run.
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
 		"ghcr.io/mpriscella/features/kind:1": {}
 	},
+
+	"onCreateCommand": "/home/linuxbrew/.linuxbrew/bin/brew install neovim",
 
 	"remoteUser": "vscode"
 }

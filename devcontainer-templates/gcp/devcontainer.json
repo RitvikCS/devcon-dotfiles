@@ -2,7 +2,7 @@
 // devcontainer.json has no inheritance, so the base features are repeated here.
 {
 	"name": "gcp",
-	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
 
 	"features": {
 		// --- base ---
@@ -17,12 +17,12 @@
 			"helm": "latest",
 			"minikube": "none"
 		},
-		"ghcr.io/duduribeiro/devcontainer-features/neovim:1": {
-			"version": "stable"
-		},
+		"ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
 		// --- gcp ---
 		"ghcr.io/dhoeric/features/google-cloud-cli:1": {}
 	},
+
+	"onCreateCommand": "/home/linuxbrew/.linuxbrew/bin/brew install neovim",
 
 	// Reuse host gcloud credentials (run `mkdir -p ~/.config/gcloud` on the host once).
 	"mounts": [

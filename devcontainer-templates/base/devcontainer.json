@@ -3,7 +3,7 @@
 // (or pick a variant folder that adds a cloud CLI on top).
 {
 	"name": "base",
-	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
 
 	"features": {
 		"ghcr.io/devcontainers/features/python:1": {
@@ -18,12 +18,14 @@
 			"helm": "latest",
 			"minikube": "none"
 		},
-		// Builds neovim stable from source on first image build (~3-5 min,
-		// cached afterwards). Debian's apt neovim is far too old.
-		"ghcr.io/duduribeiro/devcontainer-features/neovim:1": {
-			"version": "stable"
-		}
+		// Homebrew (Linuxbrew) — used below to install neovim: apt's neovim
+		// is ancient, brew ships current stable as a prebuilt bottle.
+		"ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {}
 	},
+
+	// Runs once when the container is created (brew not on PATH yet here,
+	// hence the full path).
+	"onCreateCommand": "/home/linuxbrew/.linuxbrew/bin/brew install neovim",
 
 	"remoteUser": "vscode"
 
