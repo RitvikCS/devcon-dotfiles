@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Dotfiles bootstrap. DevPod clones this repo into the container and runs
-# this script automatically once DOTFILES_URL is set (see README).
+# Dotfiles bootstrap. The devcontainer CLI clones this repo into the
+# container and runs this script when `devcontainer up` is given
+# --dotfiles-repository (install.sh is picked up by name automatically).
 # Idempotent: safe to run more than once.
 set -euo pipefail
 

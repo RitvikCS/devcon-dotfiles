@@ -1,13 +1,14 @@
 # devcon-dotfiles
 
-Devcontainer templates + dotfiles for DevPod workspaces. One repo, two jobs:
+Devcontainer templates + dotfiles, driven by the [devcontainer CLI](https://github.com/devcontainers/cli).
+One repo, two jobs:
 
 1. **`devcontainer-templates/`** — ready-made `devcontainer.json` configs you copy
    into projects. There is no inheritance in devcontainer.json, so each variant
    repeats the base features and adds its own on top.
-2. **Dotfiles** (`install.sh`, `config/`, `shell/`) — DevPod clones this repo into
-   every container and runs `install.sh`, which links `config/*` into `~/.config`
-   and hooks `shell/*.sh` into `.bashrc`.
+2. **Dotfiles** (`install.sh`, `config/`, `shell/`) — the CLI clones this repo into
+   every container (when told to, see below) and runs `install.sh`, which links
+   `config/*` into `~/.config` and hooks `shell/*.sh` into `.bashrc`.
 
 ## Templates
 
@@ -19,28 +20,36 @@ Devcontainer templates + dotfiles for DevPod workspaces. One repo, two jobs:
 | `gcp/` | gcloud, `~/.config/gcloud` bind mount |
 | `k8s-lab/` | docker-in-docker, kind — throwaway clusters for CKA practice |
 
-## One-time setup
-
-Point DevPod at this repo as your dotfiles source (applies to all workspaces):
-
-```sh
-devpod context set-options -o DOTFILES_URL=https://github.com/RitvikCS/devcon-dotfiles
-```
-
 ## Using a template in a project
 
-Copy the variant you want into the project:
+Copy the variant you want into the project, bring the container up with the
+dotfiles flag, and exec into it:
 
 ```sh
 mkdir -p myproject/.devcontainer
 cp devcontainer-templates/aws/devcontainer.json myproject/.devcontainer/
-devpod up ./myproject --ide none
-devpod ssh myproject
+
+cd myproject
+devcontainer up --workspace-folder . \
+  --dotfiles-repository https://github.com/RitvikCS/devcon-dotfiles
+devcontainer exec --workspace-folder . bash
+```
+
+`install.sh` is run automatically after cloning (the CLI looks for it by name;
+default clone path is `~/dotfiles` inside the container).
+
+To avoid retyping the flag, alias it on the host:
+
+```sh
+alias dcup='devcontainer up --workspace-folder . --dotfiles-repository https://github.com/RitvikCS/devcon-dotfiles'
+alias dcsh='devcontainer exec --workspace-folder . bash'
 ```
 
 A repo can also carry several configs side by side as
 `.devcontainer/<name>/devcontainer.json`; pick one with
-`devpod up . --devcontainer-path .devcontainer/<name>/devcontainer.json`.
+`devcontainer up --workspace-folder . --config .devcontainer/<name>/devcontainer.json`.
+(VS Code and Codespaces also read these; there you set the dotfiles repo in
+user settings — `dotfiles.repository` — instead of a flag.)
 
 ## Notes
 
