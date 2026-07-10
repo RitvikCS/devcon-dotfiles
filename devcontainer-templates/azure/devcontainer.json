@@ -17,12 +17,10 @@
 			"helm": "latest",
 			"minikube": "none"
 		},
-		"ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
+		"ghcr.io/devcontainers-extra/features/neovim-homebrew:1": {},
 		// --- azure ---
 		"ghcr.io/devcontainers/features/azure-cli:1": {}
 	},
-
-	"onCreateCommand": "/home/linuxbrew/.linuxbrew/bin/brew install neovim",
 
 	// Reuse host Azure credentials (run `mkdir -p ~/.azure` on the host once).
 	"mounts": [

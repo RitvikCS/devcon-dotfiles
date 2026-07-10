@@ -17,12 +17,10 @@
 			"helm": "latest",
 			"minikube": "none"
 		},
-		"ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
+		"ghcr.io/devcontainers-extra/features/neovim-homebrew:1": {},
 		// --- gcp ---
 		"ghcr.io/dhoeric/features/google-cloud-cli:1": {}
 	},
-
-	"onCreateCommand": "/home/linuxbrew/.linuxbrew/bin/brew install neovim",
 
 	// Reuse host gcloud credentials (run `mkdir -p ~/.config/gcloud` on the host once).
 	"mounts": [
