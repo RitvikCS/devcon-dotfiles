@@ -7,8 +7,12 @@ One repo, two jobs:
    into projects. There is no inheritance in devcontainer.json, so each variant
    repeats the base features and adds its own on top.
 2. **Dotfiles** (`install.sh`, `config/`, `shell/`) — the CLI clones this repo into
-   every container (when told to, see below) and runs `install.sh`, which links
-   `config/*` into `~/.config` and hooks `shell/*.sh` into `.bashrc`.
+   every container (when told to, see below) and runs `install.sh`, which installs
+   CLI tools (eza, bat, fzf, zoxide, starship), links `config/*` into `~/.config`
+   (LazyVim starter + starship.toml), and hooks `shell/*.sh` into `.bashrc`.
+   Also works standalone on a bare VM: `git clone` + `./install.sh` — anything
+   already in place is backed up to `*.bak`, never deleted, and fnm+node are
+   installed only when the machine has no node at all.
 
 ## Templates
 
@@ -75,6 +79,13 @@ user settings — `dotfiles.repository` — instead of a flag.)
 
 - Neovim comes from the `neovim-homebrew` feature (current stable as a
   prebuilt brew bottle, no compiling).
+- The nvim config is the stock [LazyVim starter](https://github.com/LazyVim/starter)
+  plus one tweak (`lua/plugins/explorer.lua`: snacks explorer opens focused on
+  the file list; Alt+w cycles list <-> filter input). First `nvim` launch in a
+  new container downloads plugins — give it a minute.
+- No fonts are installed in containers: glyphs (starship symbols, eza icons)
+  are rendered by the host terminal's Nerd Font, which travels with you, not
+  with the container.
 - The cloud variants bind-mount host credential dirs — `mkdir -p` them on the
   host first or docker creates them root-owned.
 - Node is installed via the official feature (nvm-based, version pinned in the

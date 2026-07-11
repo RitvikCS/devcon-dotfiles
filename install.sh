@@ -2,25 +2,75 @@
 # Dotfiles bootstrap. The devcontainer CLI clones this repo into the
 # container and runs this script when `devcontainer up` is given
 # --dotfiles-repository (install.sh is picked up by name automatically).
+# Also usable standalone on a bare VM: git clone + ./install.sh.
 # Idempotent: safe to run more than once.
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Link every directory under config/ into ~/.config (nvim/, etc.).
-# Symlinks (not copies) so a `git pull` in the dotfiles clone updates live.
-if [ -d "$DOTFILES_DIR/config" ]; then
-	mkdir -p "$HOME/.config"
-	for dir in "$DOTFILES_DIR"/config/*/; do
-		[ -d "$dir" ] || continue
-		name="$(basename "$dir")"
-		rm -rf "$HOME/.config/$name"
-		ln -sfn "${dir%/}" "$HOME/.config/$name"
-		echo "linked ~/.config/$name"
-	done
+# --- CLI tools (eza, bat, fzf, zoxide, starship) -----------------------------
+# brew when available (containers have it via the neovim-homebrew feature),
+# apt fallback for bare VMs, curl installer for what apt doesn't carry.
+
+have() { command -v "$1" >/dev/null 2>&1; }
+
+missing=()
+have eza || missing+=(eza)
+have bat || have batcat || missing+=(bat)
+have fzf || missing+=(fzf)
+have zoxide || missing+=(zoxide)
+have starship || missing+=(starship)
+
+if [ ${#missing[@]} -gt 0 ]; then
+	echo "installing: ${missing[*]}"
+	if have brew; then
+		brew install "${missing[@]}" || echo "warn: brew install had failures, continuing"
+	elif have apt-get; then
+		SUDO=""
+		[ "$(id -u)" -ne 0 ] && SUDO="sudo"
+		$SUDO apt-get update -qq || true
+		for pkg in "${missing[@]}"; do
+			if [ "$pkg" = starship ]; then
+				# not in debian/ubuntu repos — official installer
+				curl -sS https://starship.rs/install.sh | sh -s -- -y >/dev/null
+			else
+				$SUDO apt-get install -y -qq "$pkg" || echo "warn: apt has no $pkg, skipping"
+			fi
+		done
+	else
+		echo "warn: no brew or apt-get, skipped: ${missing[*]}"
+	fi
 fi
 
-# Source every shell/*.sh from .bashrc (aliases, prompt, env).
+# fnm only on machines with no node at all (bare VMs); containers get node
+# from the devcontainer feature.
+if ! have node && ! have fnm; then
+	echo "no node found — installing fnm"
+	curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+fi
+
+# --- Config links -------------------------------------------------------------
+# Symlinks (not copies) so a `git pull` in the dotfiles clone updates live.
+# Anything already there that isn't a symlink is moved aside to *.bak.
+
+link() {
+	local src="$1" dst="$2"
+	if [ -e "$dst" ] && [ ! -L "$dst" ]; then
+		mv "$dst" "$dst.bak"
+		echo "backed up $dst -> $dst.bak"
+	fi
+	ln -sfn "$src" "$dst"
+	echo "linked $dst"
+}
+
+mkdir -p "$HOME/.config"
+for entry in "$DOTFILES_DIR"/config/*; do
+	[ -e "$entry" ] || continue
+	link "$entry" "$HOME/.config/$(basename "$entry")"
+done
+
+# --- Shell hook ---------------------------------------------------------------
+# Source every shell/*.sh from .bashrc (aliases, tool inits, env).
 MARKER="# >>> devcon-dotfiles >>>"
 if [ -d "$DOTFILES_DIR/shell" ] && ! grep -qF "$MARKER" "$HOME/.bashrc" 2>/dev/null; then
 	cat >>"$HOME/.bashrc" <<EOF
