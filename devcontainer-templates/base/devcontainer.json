@@ -22,6 +22,13 @@
 		"ghcr.io/stu-bell/devcontainer-features/neovim:0": {}
 	},
 
+	// The neovim feature bakes XDG_CONFIG_HOME=/config into the image env,
+	// which hijacks config lookup (nvim, starship, ...) away from ~/.config.
+	// Runtime env set here wins over the image's.
+	"containerEnv": {
+		"XDG_CONFIG_HOME": "/home/vscode/.config"
+	},
+
 	"remoteUser": "vscode"
 
 	// To talk to a real cluster from inside the container, bind-mount your

@@ -30,5 +30,10 @@
 		"source=${localEnv:HOME}/.azure,target=/home/vscode/.azure,type=bind"
 	],
 
+	// Override the neovim feature's baked-in XDG_CONFIG_HOME=/config (see base).
+	"containerEnv": {
+		"XDG_CONFIG_HOME": "/home/vscode/.config"
+	},
+
 	"remoteUser": "vscode"
 }

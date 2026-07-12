@@ -93,6 +93,30 @@ user settings — `dotfiles.repository` — instead of a flag.)
   same base image + feature stack share layers, so N containers cost far less
   than N × image size.
 
+## Stopping and cleaning up
+
+The devcontainer CLI has no `stop`/`down` — lifecycle is plain docker. Find a
+project's container with the label the CLI stamps on it:
+
+```sh
+docker ps -aq --filter label=devcontainer.local_folder=$(pwd)
+```
+
+- **Done for the day**: `docker stop <id>` is all you need. Do NOT `docker rm`
+  — the next `devcontainer up` restarts the stopped container in seconds
+  instead of rebuilding, and nvim plugins / installed packages survive.
+- **Fresh start** (changed devcontainer.json or dotfiles):
+  `devcontainer up --workspace-folder . --remove-existing-container ...`
+  (or `docker rm -f <id>` first).
+- **Leave the `vsc-<project>-...` images alone** between sessions: the two
+  entries (`-features` and `-features-uid`) share almost all layers — not
+  double the size — and deleting them forces a full feature rebuild next `up`.
+- **Avoid routine `docker system prune -a`**: it deletes every image not used
+  by a *running* container — including base and vsc images while yours is
+  stopped — meaning a full re-download next time. Routine cleanup is
+  `docker image prune` (dangling only) and occasionally `docker builder prune`;
+  save `prune -a` for when you deliberately want the disk back.
+
 ## Notes
 
 - Neovim comes from the `stu-bell/devcontainer-features/neovim` feature: the

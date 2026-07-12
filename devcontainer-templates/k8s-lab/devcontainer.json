@@ -28,5 +28,10 @@
 		"ghcr.io/mpriscella/features/kind:1": {}
 	},
 
+	// Override the neovim feature's baked-in XDG_CONFIG_HOME=/config (see base).
+	"containerEnv": {
+		"XDG_CONFIG_HOME": "/home/vscode/.config"
+	},
+
 	"remoteUser": "vscode"
 }
