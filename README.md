@@ -18,7 +18,7 @@ One repo, two jobs:
 
 | Template | Adds on top of base |
 |---|---|
-| `base/` | — (ubuntu 26.04, python 3.12, node LTS, kubectl, helm, neovim via official AppImage) |
+| `base/` | — (ubuntu 26.04, python 3.12, node LTS, kubectl, helm, neovim from apt) |
 | `aws/` | aws-cli, terraform, `~/.aws` bind mount |
 | `azure/` | azure-cli, `~/.azure` bind mount |
 | `gcp/` | gcloud, `~/.config/gcloud` bind mount |
@@ -119,10 +119,14 @@ docker ps -aq --filter label=devcontainer.local_folder=$(pwd)
 
 ## Notes
 
-- Neovim comes from the `stu-bell/devcontainer-features/neovim` feature: the
-  official current-stable AppImage, extracted at build time (no FUSE needed)
-  with the full runtime kept — ~40 MB. The previous `neovim-homebrew` feature
-  dragged in the whole Homebrew toolchain (~2.5 GB per image).
+- Neovim comes from the plain ubuntu archive (0.11.6 on 26.04, above LazyVim's
+  0.11.2 minimum) via the generic `rocker-org/.../apt-packages` feature.
+  History of the alternatives: the `neovim-homebrew` feature dragged in the
+  whole Homebrew toolchain (~2.5 GB per image); the `stu-bell` AppImage feature
+  bakes `XDG_CONFIG_HOME=/config` into the image, which silently redirects
+  nvim's config lookup away from `~/.config` (LazyVim never loads); the
+  `neovim-apt-get` feature uses the abandoned neovim PPA (v0.7.2, no 26.04
+  builds). Distro apt is the boring option that just works.
 - The nvim config is the stock [LazyVim starter](https://github.com/LazyVim/starter)
   plus one tweak (`lua/plugins/explorer.lua`: snacks explorer opens focused on
   the file list; Alt+w cycles list <-> filter input). First `nvim` launch in a

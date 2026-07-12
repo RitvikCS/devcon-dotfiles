@@ -17,8 +17,10 @@
 			"helm": "latest",
 			"minikube": "none"
 		},
-		// Neovim current stable — official AppImage, extracted (no FUSE), ~40 MB.
-		"ghcr.io/stu-bell/devcontainer-features/neovim:0": {},
+		// Neovim from the ubuntu archive (0.11.6 on 26.04; LazyVim needs >= 0.11.2).
+		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+			"packages": "neovim"
+		},
 		// --- azure ---
 		// MS hasn't published its azure-cli apt repo for ubuntu 26.04 yet, so the
 		// feature falls back to a pipx install (slower build; heals itself upstream).
@@ -29,11 +31,6 @@
 	"mounts": [
 		"source=${localEnv:HOME}/.azure,target=/home/vscode/.azure,type=bind"
 	],
-
-	// Override the neovim feature's baked-in XDG_CONFIG_HOME=/config (see base).
-	"containerEnv": {
-		"XDG_CONFIG_HOME": "/home/vscode/.config"
-	},
 
 	"remoteUser": "vscode"
 }
