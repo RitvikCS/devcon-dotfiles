@@ -1,6 +1,12 @@
 # Sourced from ~/.bashrc by install.sh
 # Each init is guarded so a machine where a tool didn't install still works.
 
+# Export SHELL for child processes. When the environment lacks SHELL (e.g.
+# `devcontainer exec bash`), bash sets the variable from /etc/passwd but does
+# NOT export it — so nvim's :terminal falls back to plain sh (no bashrc, no
+# starship, no aliases).
+export SHELL="${SHELL:-/bin/bash}"
+
 # fzf: Ctrl+R history, Ctrl+T files, Alt+C cd
 command -v fzf >/dev/null 2>&1 && eval "$(fzf --bash)"
 
