@@ -2,7 +2,7 @@
 // devcontainer.json has no inheritance, so the base features are repeated here.
 {
 	"name": "azure",
-	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu26.04",
 
 	"features": {
 		// --- base ---
@@ -17,8 +17,11 @@
 			"helm": "latest",
 			"minikube": "none"
 		},
-		"ghcr.io/devcontainers-extra/features/neovim-homebrew:1": {},
+		// Neovim current stable — official AppImage, extracted (no FUSE), ~40 MB.
+		"ghcr.io/stu-bell/devcontainer-features/neovim:0": {},
 		// --- azure ---
+		// MS hasn't published its azure-cli apt repo for ubuntu 26.04 yet, so the
+		// feature falls back to a pipx install (slower build; heals itself upstream).
 		"ghcr.io/devcontainers/features/azure-cli:1": {}
 	},
 

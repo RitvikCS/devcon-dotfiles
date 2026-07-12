@@ -2,7 +2,7 @@
 // devcontainer.json has no inheritance, so the base features are repeated here.
 {
 	"name": "gcp",
-	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu26.04",
 
 	"features": {
 		// --- base ---
@@ -17,7 +17,8 @@
 			"helm": "latest",
 			"minikube": "none"
 		},
-		"ghcr.io/devcontainers-extra/features/neovim-homebrew:1": {},
+		// Neovim current stable — official AppImage, extracted (no FUSE), ~40 MB.
+		"ghcr.io/stu-bell/devcontainer-features/neovim:0": {},
 		// --- gcp ---
 		"ghcr.io/dhoeric/features/google-cloud-cli:1": {}
 	},
