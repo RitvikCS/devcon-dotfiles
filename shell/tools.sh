@@ -8,7 +8,15 @@
 export SHELL="${SHELL:-/bin/bash}"
 
 # fzf: Ctrl+R history, Ctrl+T files, Alt+C cd
-command -v fzf >/dev/null 2>&1 && eval "$(fzf --bash)"
+# `fzf --bash` needs fzf >= 0.48; Ubuntu 24.04's apt has 0.44, which ships
+# the bindings as a file instead.
+if command -v fzf >/dev/null 2>&1; then
+	if fzf --bash >/dev/null 2>&1; then
+		eval "$(fzf --bash)"
+	elif [ -r /usr/share/doc/fzf/examples/key-bindings.bash ]; then
+		. /usr/share/doc/fzf/examples/key-bindings.bash
+	fi
+fi
 
 # zoxide: z <dir> jumps, zi picks interactively
 command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init bash)"
