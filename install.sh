@@ -42,11 +42,18 @@ if [ ${#missing[@]} -gt 0 ]; then
 	fi
 fi
 
-# fnm only on machines with no node at all (bare VMs); containers get node
-# from the devcontainer feature.
-if ! have node && ! have fnm; then
-	echo "no node found — installing fnm"
-	curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+# fnm unless node already comes from somewhere managed: containers get node
+# from the devcontainer feature (under /usr/local/share/nvm). A node in
+# /usr/bin is the distro package, often pulled in by apt as a recommended
+# dependency (e.g. of tree-sitter-cli), so it doesn't count.
+if ! have fnm; then
+	node_path="$(command -v node 2>/dev/null || true)"
+	case "$node_path" in
+	"" | /usr/bin/node)
+		echo "no managed node found — installing fnm"
+		curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+		;;
+	esac
 fi
 
 # --- Config links -------------------------------------------------------------
