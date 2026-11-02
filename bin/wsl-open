@@ -1,0 +1,14 @@
+#!/bin/sh
+# Open a URL or a file/folder from WSL with its Windows default app:
+#   wsl-open https://github.com   -> default browser
+#   wsl-open report.pdf           -> Windows PDF viewer
+#   wsl-open                      -> current folder in Explorer
+# Also used as $BROWSER and as xdg-open on WSL (see shell/wsl.sh).
+# explorer.exe exits 1 even when it succeeds, so its status is ignored.
+target="${1:-.}"
+case "$target" in
+*://* | mailto:*) ;;
+*) [ -e "$target" ] && target="$(wslpath -w "$target")" ;;
+esac
+explorer.exe "$target" >/dev/null 2>&1
+exit 0
