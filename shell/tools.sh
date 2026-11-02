@@ -18,9 +18,6 @@ if command -v fzf >/dev/null 2>&1; then
 	fi
 fi
 
-# zoxide: z <dir> jumps, zi picks interactively
-command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init bash)"
-
 # fnm: only present where install.sh found no node (bare work VMs);
 # containers get node from the devcontainer feature instead.
 if [ -d "$HOME/.local/share/fnm" ] && ! command -v fnm >/dev/null 2>&1; then
@@ -28,5 +25,10 @@ if [ -d "$HOME/.local/share/fnm" ] && ! command -v fnm >/dev/null 2>&1; then
 fi
 command -v fnm >/dev/null 2>&1 && eval "$(fnm env --use-on-cd --shell bash)"
 
-# starship last so nothing below clobbers the prompt
+# starship, then zoxide last: starship's init replaces PROMPT_COMMAND, which
+# dropped zoxide's directory-tracking hook when zoxide came first (z stopped
+# learning and printed "detected a possible configuration issue").
 command -v starship >/dev/null 2>&1 && eval "$(starship init bash)"
+
+# zoxide: z <dir> jumps, zi picks interactively
+command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init bash)"
